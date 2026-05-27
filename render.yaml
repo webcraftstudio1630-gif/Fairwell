@@ -9,9 +9,9 @@ services:
     name: farewell-website
     env: node
     plan: free
-    # The build command will install root dependencies, build the frontend, 
+    # The build command will install root dependencies (including devDependencies like vite), build the frontend, 
     # then install backend dependencies.
-    buildCommand: npm install && npm run build && cd backend && npm install
+    buildCommand: npm install --include=dev && npm run build && cd backend && npm install
     # The start command runs the backend, which now serves the built frontend.
     startCommand: cd backend && npm start
     envVars:
