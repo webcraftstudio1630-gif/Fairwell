@@ -1,0 +1,27 @@
+databases:
+  - name: farewell-db
+    databaseName: farewell
+    user: farewell_user
+    plan: free
+
+services:
+  - type: web
+    name: farewell-website
+    env: node
+    plan: free
+    # The build command will install root dependencies, build the frontend, 
+    # then install backend dependencies.
+    buildCommand: npm install && npm run build && cd backend && npm install
+    # The start command runs the backend, which now serves the built frontend.
+    startCommand: cd backend && npm start
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: farewell-db
+          property: connectionString
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: NODE_VERSION
+        value: 20

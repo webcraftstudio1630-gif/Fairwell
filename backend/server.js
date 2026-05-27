@@ -6,6 +6,11 @@ import friendsRouter from './routes/friends.js';
 import messagesRouter from './routes/messages.js';
 import authRouter from './routes/auth.js';
 import notesRouter from './routes/notes.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
@@ -29,6 +34,15 @@ app.use('/api/notes', notesRouter);
 app.get('/api/status', (req, res) => {
   res.json({ status: 'Backend is running' });
 });
+
+// Serve frontend static files in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../dist')));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../dist', 'index.html'));
+  });
+}
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
