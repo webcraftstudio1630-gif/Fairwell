@@ -36,7 +36,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ setActiveTab }) => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || 'Authentication failed');
+        throw new Error(data.message || data.error || 'Authentication failed');
       }
 
       login(data.user, data.token);

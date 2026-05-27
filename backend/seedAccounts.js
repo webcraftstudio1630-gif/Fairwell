@@ -2,6 +2,9 @@ import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 import sequelize from './config/database.js';
 import User from './models/User.js';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
 
 dotenv.config();
 
@@ -76,4 +79,29 @@ const seed = async () => {
   }
 };
 
-seed();
+export const seedIfEmpty = async () => {
+  try {
+    const count = await User.count();
+    if (count > 0) {
+      console.log('Database already has users. Skipping seed.');
+      return;
+    }
+    console.log('Database is empty. Seeding initial accounts...');
+    
+    // Create 1 Admin
+    await createAccount(adminAccount.username, adminAccount.password, 'Admin');
+
+    // Create 13 Friends
+    for (const friend of friendAccounts) {
+      await createAccount(friend.username, friend.password, 'Friend');
+    }
+
+    console.log('Finished auto-seeding accounts.');
+  } catch (err) {
+    console.error('Error auto-seeding accounts:', err);
+  }
+};
+
+if (process.argv[1] === __filename) {
+  seed();
+}

@@ -20,9 +20,14 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+import { seedIfEmpty } from './seedAccounts.js';
+
 // Connect to PostgreSQL and sync models
 sequelize.sync({ alter: true }) // use alter: true to update schema if models change
-  .then(() => console.log('PostgreSQL connected and models synced successfully'))
+  .then(async () => {
+    console.log('PostgreSQL connected and models synced successfully');
+    await seedIfEmpty();
+  })
   .catch((err) => console.error('PostgreSQL connection error:', err));
 
 // Routes
