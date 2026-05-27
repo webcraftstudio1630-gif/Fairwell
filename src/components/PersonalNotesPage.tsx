@@ -4,14 +4,14 @@ import { Sparkles, MessageCircle, PenTool, Send, Heart } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 
 interface NoteUser {
-  _id?: string;
+  id?: string;
   username: string;
   uniqueId: string;
   role: string;
 }
 
 interface Note {
-  _id: string;
+  id: string;
   user: NoteUser;
   recipient: NoteUser;
   content: string;
@@ -59,8 +59,8 @@ export const PersonalNotesPage: React.FC = () => {
         const data = await res.json();
         setUsers(data);
         const adminUser = data.find((u: NoteUser) => u.role === 'Admin');
-        if (adminUser) setSelectedRecipient(adminUser._id);
-        else if (data.length > 0) setSelectedRecipient(data[0]._id);
+        if (adminUser) setSelectedRecipient(adminUser.id);
+        else if (data.length > 0) setSelectedRecipient(data[0].id);
       }
     } catch (err) {
       console.error('Failed to fetch users', err);
@@ -111,7 +111,7 @@ export const PersonalNotesPage: React.FC = () => {
       });
       if (res.ok) {
         const updatedNote = await res.json();
-        setNotes(notes.map(n => n._id === noteId ? updatedNote : n));
+        setNotes(notes.map(n => n.id === noteId ? updatedNote : n));
       }
     } catch (err) {
       console.error('Failed to like note', err);
@@ -164,8 +164,8 @@ export const PersonalNotesPage: React.FC = () => {
               required
             >
               <option value="" disabled>Select a recipient...</option>
-              {users.filter(u => u._id !== user?.id).map(u => (
-                <option key={u._id} value={u._id}>
+              {users.filter(u => u.id !== user?.id).map(u => (
+                <option key={u.id} value={u.id}>
                   {u.username} {u.role === 'Admin' ? '(Admin)' : ''}
                 </option>
               ))}
@@ -212,7 +212,7 @@ export const PersonalNotesPage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {notes.map((note) => (
                 <motion.div
-                  key={note._id}
+                  key={note.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="glass-panel p-6 rounded-3xl border-slate-200 shadow-lg bg-white/80 relative group"
@@ -243,7 +243,7 @@ export const PersonalNotesPage: React.FC = () => {
                   
                   <div className="mt-4 flex items-center justify-between">
                     <span className="text-[10px] font-mono text-slate-400">ID: {note.user?.uniqueId}</span>
-                    <button onClick={() => handleLike(note._id)} className="flex items-center gap-1.5 group/like">
+                    <button onClick={() => handleLike(note.id)} className="flex items-center gap-1.5 group/like">
                       <Heart className={`w-4 h-4 transition ${note.likes?.includes(user?.id || '') ? 'text-pink-600 fill-pink-600' : 'text-pink-200 group-hover/like:text-pink-600'}`} />
                       {note.likes?.length > 0 && <span className="text-xs text-slate-500 font-medium">{note.likes.length}</span>}
                     </button>

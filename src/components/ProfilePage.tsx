@@ -27,7 +27,7 @@ export const ProfilePage: React.FC = () => {
       });
       if (res.ok) {
         const updatedUser = await res.json();
-        setUsersList(usersList.map(u => u._id === userId ? updatedUser : u));
+        setUsersList(usersList.map(u => u.id === userId ? updatedUser : u));
       }
     } catch (err) {
       console.error('Failed to toggle ban status', err);
@@ -99,14 +99,14 @@ export const ProfilePage: React.FC = () => {
                   </h4>
                   <div className="space-y-3">
                     {usersList.filter(u => u.role !== 'Admin').map(u => (
-                      <div key={u._id} className="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-xl shadow-sm">
+                      <div key={u.id} className="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-xl shadow-sm">
                         <div>
                           <p className={`text-sm font-bold ${u.isBanned ? 'text-red-600 line-through' : 'text-slate-800'}`}>{u.username}</p>
                           <p className="text-xs font-mono text-slate-400">ID: {u.uniqueId}</p>
                         </div>
                         <div className="flex items-center gap-2">
                           <button
-                            onClick={() => handleImpersonate(u._id)}
+                            onClick={() => handleImpersonate(u.id)}
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100"
                             title="Login as this user"
                           >
@@ -114,7 +114,7 @@ export const ProfilePage: React.FC = () => {
                             Login
                           </button>
                           <button
-                            onClick={() => handleBanToggle(u._id)}
+                            onClick={() => handleBanToggle(u.id)}
                             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${u.isBanned ? 'bg-green-50 text-green-700 border border-green-200 hover:bg-green-100' : 'bg-red-50 text-red-700 border border-red-200 hover:bg-red-100'}`}
                           >
                             {u.isBanned ? <CheckCircle className="w-3.5 h-3.5" /> : <Ban className="w-3.5 h-3.5" />}
