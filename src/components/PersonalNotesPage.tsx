@@ -93,9 +93,13 @@ export const PersonalNotesPage: React.FC = () => {
         const savedNote = await res.json();
         setNotes([savedNote, ...notes]);
         setNewNote('');
+      } else {
+        const errData = await res.json();
+        alert('Failed to send note: ' + (errData.message || errData.error || 'Unknown error'));
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to post note', err);
+      alert('Network error while sending note: ' + err.message);
     } finally {
       setSubmitting(false);
     }
@@ -218,18 +222,18 @@ export const PersonalNotesPage: React.FC = () => {
                   className="glass-panel p-6 rounded-3xl border-slate-200 shadow-lg bg-white/80 relative group"
                 >
                   <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-100 to-purple-100 border border-purple-200 flex items-center justify-center text-purple-800 font-bold shadow-sm shrink-0">
-                        {note.user?.username.charAt(0).toUpperCase()}
-                      </div>
-                      <div className="flex flex-col">
-                        <p className="text-sm font-semibold text-slate-900 flex flex-wrap items-center gap-1.5">
-                          <span>{note.user?.username}</span>
-                          {note.user?.role === 'Admin' && <span className="text-[9px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">ADMIN</span>}
-                          <span className="text-slate-400 font-light mx-1">→</span>
-                          <span>{note.recipient?.username}</span>
-                          {note.recipient?.role === 'Admin' && <span className="text-[9px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">ADMIN</span>}
-                        </p>
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-100 to-purple-100 border border-purple-200 flex items-center justify-center text-purple-800 font-bold shadow-sm shrink-0">
+                          {note.user?.username?.charAt(0)?.toUpperCase() || '?'}
+                        </div>
+                        <div className="flex flex-col">
+                          <p className="text-sm font-semibold text-slate-900 flex flex-wrap items-center gap-1.5">
+                            <span>{note.user?.username || 'Unknown User'}</span>
+                            {note.user?.role === 'Admin' && <span className="text-[9px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">ADMIN</span>}
+                            <span className="text-slate-400 font-light mx-1">→</span>
+                            <span>{note.recipient?.username || 'Unknown User'}</span>
+                            {note.recipient?.role === 'Admin' && <span className="text-[9px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">ADMIN</span>}
+                          </p>
                         <p className="text-[10px] text-slate-500 font-mono">{new Date(note.createdAt).toLocaleDateString()}</p>
                       </div>
                     </div>
