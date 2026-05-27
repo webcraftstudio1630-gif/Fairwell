@@ -62,7 +62,7 @@ export const HomePage: React.FC<HomePageProps> = ({ setActiveTab }) => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-5xl sm:text-7xl md:text-8xl font-serif font-bold tracking-tight mb-6 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-600 bg-clip-text text-transparent leading-[1.1]"
           >
-            Four Years.<br />
+            Three Years.<br />
             <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">
               One Eternal Bond.
             </span>
@@ -112,7 +112,7 @@ export const HomePage: React.FC<HomePageProps> = ({ setActiveTab }) => {
             </div>
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4 text-pink-600" />
-              <span>1,460 Days Together</span>
+              <span>1,095 Days Together</span>
             </div>
             <div className="flex items-center gap-2">
               <Compass className="w-4 h-4 text-indigo-600" />

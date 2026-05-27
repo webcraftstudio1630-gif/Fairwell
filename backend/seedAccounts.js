@@ -27,6 +27,7 @@ const friendAccounts = [
   { username: 'Sahil', password: 'Sahil2026!' },
   { username: 'Ayushi', password: 'Ayushi2026!' },
   { username: 'Pranali', password: 'Pranali2026!' },
+  { username: 'Pratyusha', password: 'Pratyusha2026!' },
 ];
 
 const generateUniqueId = () => {
