@@ -6,7 +6,7 @@ const router = express.Router();
 // GET all friends
 router.get('/', async (req, res) => {
   try {
-    const friends = await Friend.find();
+    const friends = await Friend.findAll();
     res.json(friends);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -15,9 +15,8 @@ router.get('/', async (req, res) => {
 
 // POST a new friend
 router.post('/', async (req, res) => {
-  const friend = new Friend(req.body);
   try {
-    const newFriend = await friend.save();
+    const newFriend = await Friend.create(req.body);
     res.status(201).json(newFriend);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -33,10 +32,10 @@ router.post('/seed', async (req, res) => {
     }
     
     // Clear existing
-    await Friend.deleteMany({});
+    await Friend.destroy({ where: {} });
     
     // Insert new
-    const insertedFriends = await Friend.insertMany(friends);
+    const insertedFriends = await Friend.bulkCreate(friends);
     res.status(201).json({ message: 'Database seeded successfully', count: insertedFriends.length });
   } catch (error) {
     res.status(500).json({ message: error.message });

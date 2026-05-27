@@ -1,6 +1,7 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { Op } from 'sequelize';
 import User from '../models/User.js';
 import { auth } from '../middleware/auth.js';
 
@@ -16,8 +17,13 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Not all fields have been entered.' });
     }
 
-    // Perform case-insensitive search so "Adveth", "adveth", or "ADVETH" all work
-    const user = await User.findOne({ username: { $regex: new RegExp(`^${username}$`, 'i') } });
+    // Perform case-insensitive search
+    const user = await User.findOne({ 
+      where: { 
+        username: { [Op.iLike]: username } 
+      } 
+    });
+    
     if (!user) {
       return res.status(400).json({ message: 'Invalid credentials.' });
     }
@@ -31,12 +37,12 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials.' });
     }
 
-    const token = jwt.sign({ id: user._id, role: user.role, username: user.username, uniqueId: user.uniqueId }, process.env.JWT_SECRET || 'fallback_secret');
+    const token = jwt.sign({ id: user.id, role: user.role, username: user.username, uniqueId: user.uniqueId }, process.env.JWT_SECRET || 'fallback_secret');
     
     res.json({
       token,
       user: {
-        id: user._id,
+        id: user.id,
         username: user.username,
         role: user.role,
         uniqueId: user.uniqueId
@@ -50,7 +56,9 @@ router.post('/login', async (req, res) => {
 // Get current user
 router.get('/me', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password');
+    const user = await User.findByPk(req.user.id, {
+      attributes: { exclude: ['password'] }
+    });
     res.json(user);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -60,7 +68,9 @@ router.get('/me', auth, async (req, res) => {
 // Get all users (for recipient selection)
 router.get('/users', auth, async (req, res) => {
   try {
-    const users = await User.find().select('-password');
+    const users = await User.findAll({
+      attributes: { exclude: ['password'] }
+    });
     res.json(users);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -74,7 +84,7 @@ router.put('/users/:id/ban', auth, async (req, res) => {
       return res.status(403).json({ message: 'Only admins can ban users.' });
     }
 
-    const userToBan = await User.findById(req.params.id);
+    const userToBan = await User.findByPk(req.params.id);
     if (!userToBan) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -98,7 +108,7 @@ router.post('/impersonate/:id', auth, async (req, res) => {
       return res.status(403).json({ message: 'Only admins can impersonate users.' });
     }
 
-    const userToImpersonate = await User.findById(req.params.id);
+    const userToImpersonate = await User.findByPk(req.params.id);
     if (!userToImpersonate) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -107,12 +117,12 @@ router.post('/impersonate/:id', auth, async (req, res) => {
       return res.status(403).json({ message: 'This account has been banned.' });
     }
 
-    const token = jwt.sign({ id: userToImpersonate._id, role: userToImpersonate.role, username: userToImpersonate.username, uniqueId: userToImpersonate.uniqueId }, process.env.JWT_SECRET || 'fallback_secret');
+    const token = jwt.sign({ id: userToImpersonate.id, role: userToImpersonate.role, username: userToImpersonate.username, uniqueId: userToImpersonate.uniqueId }, process.env.JWT_SECRET || 'fallback_secret');
     
     res.json({
       token,
       user: {
-        id: userToImpersonate._id,
+        id: userToImpersonate.id,
         username: userToImpersonate.username,
         role: userToImpersonate.role,
         uniqueId: userToImpersonate.uniqueId

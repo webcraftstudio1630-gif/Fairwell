@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Heart, Calendar, Bookmark, Quote, PenTool, Sparkle, ArrowLeft } from 'lucide-react';
+import { Sparkles, Heart, Calendar, Bookmark, Quote, PenTool, Sparkle, ArrowLeft, Lock } from 'lucide-react';
 import { friendsData, Friend } from '../data/friendsData';
+import { AuthContext } from '../context/AuthContext';
 
 interface PersonalLettersProps {
   setActiveTab: (tab: string) => void;
@@ -10,28 +11,51 @@ interface PersonalLettersProps {
 }
 
 export const PersonalLettersPage: React.FC<PersonalLettersProps> = ({ setActiveTab, selectedFriendId, setSelectedFriendId }) => {
+  const { user } = useContext(AuthContext);
+
+  const visibleFriends = friendsData.filter((friend) => {
+    if (user?.role === 'Admin') return true;
+    return friend.username === user?.username;
+  });
+
   // Default to the first friend if none selected
-  const [activeFriend, setActiveFriend] = useState<Friend>(() => {
+  const [activeFriend, setActiveFriend] = useState<Friend | null>(() => {
     if (selectedFriendId) {
-      const found = friendsData.find(f => f.id === selectedFriendId);
+      const found = visibleFriends.find(f => f.id === selectedFriendId);
       if (found) return found;
     }
-    return friendsData[0];
+    return visibleFriends.length > 0 ? visibleFriends[0] : null;
   });
 
   useEffect(() => {
     if (selectedFriendId) {
-      const found = friendsData.find(f => f.id === selectedFriendId);
+      const found = visibleFriends.find(f => f.id === selectedFriendId);
       if (found) {
         setActiveFriend(found);
       }
     }
-  }, [selectedFriendId]);
+  }, [selectedFriendId, visibleFriends]);
 
   const handleSelectFriend = (friend: Friend) => {
     setActiveFriend(friend);
     setSelectedFriendId(friend.id);
   };
+
+  if (!activeFriend) {
+    return (
+      <div className="relative z-10 pt-20 md:pt-32 pb-16 px-4 max-w-7xl mx-auto space-y-12 font-sans text-center h-screen flex flex-col items-center justify-center">
+        <Lock className="w-16 h-16 text-slate-400 mx-auto mb-4" />
+        <h2 className="text-2xl font-bold text-slate-700">No Letters Available</h2>
+        <p className="text-slate-500">You do not have access to any personal letters.</p>
+        <button
+          onClick={() => setActiveTab('gallery')}
+          className="mt-6 px-6 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition"
+        >
+          Back to Gallery
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="relative z-10 pt-20 md:pt-32 pb-16 px-4 max-w-7xl mx-auto space-y-12 font-sans">
@@ -65,10 +89,10 @@ export const PersonalLettersPage: React.FC<PersonalLettersProps> = ({ setActiveT
         </motion.p>
       </div>
 
-      {/* 13 Friends Navigation Tabs / Carousel */}
+      {/* Navigation Tabs / Carousel */}
       <div className="glass-panel p-3 rounded-3xl shadow-md border-slate-200 bg-white/90 backdrop-blur-xl max-w-full overflow-x-auto scrollbar-none">
         <div className="flex items-center gap-2 min-w-max px-1 py-1">
-          {friendsData.map((friend) => {
+          {visibleFriends.map((friend) => {
             const isActive = activeFriend.id === friend.id;
             return (
               <button

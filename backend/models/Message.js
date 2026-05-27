@@ -1,10 +1,29 @@
-import mongoose from 'mongoose';
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/database.js';
 
-const MessageSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String },
-  message: { type: String, required: true },
-  isApproved: { type: Boolean, default: true }
-}, { timestamps: true });
+const Message = sequelize.define('Message', {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true,
+  },
+  name: { 
+    type: DataTypes.STRING, 
+    allowNull: false 
+  },
+  email: { 
+    type: DataTypes.STRING 
+  },
+  message: { 
+    type: DataTypes.TEXT, 
+    allowNull: false 
+  },
+  isApproved: { 
+    type: DataTypes.BOOLEAN, 
+    defaultValue: true 
+  }
+}, {
+  timestamps: true,
+});
 
-export default mongoose.model('Message', MessageSchema);
+export default Message;

@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
+import sequelize from './config/database.js';
 import User from './models/User.js';
 
 dotenv.config();
@@ -9,24 +9,22 @@ dotenv.config();
 // EDIT YOUR CUSTOM USERNAMES & PASSWORDS HERE
 // ==========================================
 
-const adminAccount = { username: 'admin', password: 'adminpass' };
+const adminAccount = { username: 'admin', password: 'Admin2026!' };
 
 const friendAccounts = [
-  { username: 'Adveth', password: 'advethpass' },
-  { username: 'Rohit', password: 'gym boy' },
-  { username: 'Shantanu', password: 'ladki baaz' },
-  { username: 'Parth', password: 'password' },
-  { username: 'Bhageshree', password: 'iphone' },
-  { username: 'Pari', password: 'bachhi' },
-  { username: 'Abhii', password: 'nunu' },
-  { username: 'Ashlesha', password: 'matchis chi kadi' },
-  { username: 'Samruddhi', password: 'roadroller' },
-  { username: 'Pratyusha', password: 'thanda pani' },
-  { username: 'Sahil', password: 'shreya' },
-  { username: 'Ayushi', password: 'half day' },
-  { username: 'Pranali', password: 'nagin' },
+  { username: 'Adveth', password: 'Adveth1982!' },
+  { username: 'Rohit', password: 'Rohit1111!' },
+  { username: 'Shantanu', password: 'Shantanu2023!' },
+  { username: 'Parth', password: 'Parth2023!' },
+  { username: 'Bhageshree', password: 'Bhageshree2026!' },
+  { username: 'Pari', password: 'Pari2026!' },
+  { username: 'Abhii', password: 'Abhii2026!' },
+  { username: 'Ashlesha', password: 'Ashlesha2026!' },
+  { username: 'Samruddhi', password: 'Samruddhi2026!' },
+  { username: 'Sahil', password: 'Sahil2026!' },
+  { username: 'Ayushi', password: 'Ayushi2026!' },
+  { username: 'Pranali', password: 'Pranali2026!' },
 ];
-
 
 const generateUniqueId = () => {
   const randomNum = Math.floor(1000 + Math.random() * 9000);
@@ -38,28 +36,27 @@ const createAccount = async (username, password, role) => {
   const passwordHash = await bcrypt.hash(password, salt);
 
   let uniqueId = generateUniqueId();
-  while (await User.findOne({ uniqueId })) {
+  while (await User.findOne({ where: { uniqueId } })) {
     uniqueId = generateUniqueId();
   }
 
-  const newUser = new User({
+  const newUser = await User.create({
     username,
     password: passwordHash,
     role,
     uniqueId
   });
 
-  await newUser.save();
   console.log(`Created ${role} account: ${username}`);
 };
 
 const seed = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('Connected to MongoDB');
+    await sequelize.authenticate();
+    console.log('Connected to PostgreSQL');
+    
+    await sequelize.sync({ force: true }); // This drops the tables and recreates them
 
-    // Clear old users so we only have exactly these 14 accounts
-    await User.deleteMany({});
     console.log('Cleared old users from the database.');
 
     // Create 1 Admin

@@ -54,7 +54,7 @@ export const ProfilePage: React.FC = () => {
   }
 
   const isAdmin = user.role === 'Admin';
-  const friendData = !isAdmin ? friendsData.find(f => f.name.toLowerCase() === user.username.toLowerCase()) : null;
+  const friendData = !isAdmin ? friendsData.find(f => f.username === user.username) : null;
 
   return (
     <div className="relative z-10 pt-32 pb-16 px-4 max-w-5xl mx-auto min-h-[80vh] font-sans">

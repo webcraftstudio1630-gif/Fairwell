@@ -34,6 +34,7 @@ export interface Friend {
   videoCaption: string;
   highlights: string[];
   role: string;
+  username: string;
 }
 
 export interface MusicTrack {
@@ -101,7 +102,8 @@ export const friendsData: Friend[] = [
     handwrittenQuote: "Keep building beautiful things, my friend. See you at the top!",
     videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-group-of-friends-partying-happily-46557-large.mp4",
     videoCaption: "Celebrating Alex's hackathon victory at the downtown loft, 2024.",
-    highlights: ["3 AM Diner Runs", "Hackathon Champions", "Rooftop Jam Sessions"]
+    highlights: ["3 AM Diner Runs", "Hackathon Champions", "Rooftop Jam Sessions"],
+    username: "Adveth"
   },
   {
     id: "maya",
@@ -121,7 +123,8 @@ export const friendsData: Friend[] = [
     handwrittenQuote: "Never lose that spark that makes you see magic in the mundane.",
     videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-sign-smiling-4886-large.mp4",
     videoCaption: "Maya capturing the neon lights during our midnight city walk.",
-    highlights: ["Polaroid Wall Creation", "Midnight Art Therapy", "Forest Hiking"]
+    highlights: ["Polaroid Wall Creation", "Midnight Art Therapy", "Forest Hiking"],
+    username: "Rohit"
   },
   {
     id: "shantanu",
@@ -141,7 +144,8 @@ export const friendsData: Friend[] = [
     handwrittenQuote: "You've got the biggest heart of anyone I know. Keep healing the world.",
     videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-friends-toasting-with-beer-bottles-42812-large.mp4",
     videoCaption: "Marcus leading the toast at our final Sunday family barbecue.",
-    highlights: ["Sunday BBQs", "Marathon Day", "Late Night Advice"]
+    highlights: ["Sunday BBQs", "Marathon Day", "Late Night Advice"],
+    username: "Shantanu"
   },
   {
     id: "parth kharche",
@@ -161,7 +165,8 @@ export const friendsData: Friend[] = [
     handwrittenQuote: "May your life always be filled with beautiful music and standing ovations.",
     videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-woman-playing-acoustic-guitar-in-the-sun-34563-large.mp4",
     videoCaption: "Elena practicing her new single on the porch at sunset.",
-    highlights: ["Candlelight Sessions", "Open Mic Triumphs", "Beach Campfires"]
+    highlights: ["Candlelight Sessions", "Open Mic Triumphs", "Beach Campfires"],
+    username: "Parth"
   },
   {
     id: "bhageshree amane",
@@ -181,7 +186,8 @@ export const friendsData: Friend[] = [
     handwrittenQuote: "Keep shining bright and bringing the party wherever you go!",
     videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-group-of-friends-cheering-at-a-party-45814-large.mp4",
     videoCaption: "Jordan getting the entire crowd hyped at our New Year's Eve bash.",
-    highlights: ["Flash Mob Glory", "Mascot Surprise", "Tokyo Sendoff"]
+    highlights: ["Flash Mob Glory", "Mascot Surprise", "Tokyo Sendoff"],
+    username: "Bhageshree"
   },
   {
     id: "pari kewat",
@@ -201,7 +207,8 @@ export const friendsData: Friend[] = [
     handwrittenQuote: "Thank you for keeping us together. You're irreplaceable.",
     videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-friends-laughing-and-talking-in-a-diner-43015-large.mp4",
     videoCaption: "Sophia going over the weekend itinerary over diner pancakes.",
-    highlights: ["Cabin Getaway", "Surprise Parties", "Late Night Prep"]
+    highlights: ["Cabin Getaway", "Surprise Parties", "Late Night Prep"],
+    username: "Pari"
   },
   {
     id: "abhishek gohane ",
@@ -221,7 +228,8 @@ export const friendsData: Friend[] = [
     handwrittenQuote: "Stay curious, stay kind, and never stop looking up at the stars.",
     videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-man-reading-a-book-in-a-cozy-living-room-41584-large.mp4",
     videoCaption: "Liam sharing a passage from his favorite book during a rainy afternoon.",
-    highlights: ["Fire Escape Dawns", "Philosophy Salons", "Paris Sendoff"]
+    highlights: ["Fire Escape Dawns", "Philosophy Salons", "Paris Sendoff"],
+    username: "Abhii"
   },
   {
     id: "ashlesha aaglawe",
@@ -241,7 +249,8 @@ export const friendsData: Friend[] = [
     handwrittenQuote: "You make the world a more beautiful place just by being in it.",
     videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-woman-smiling-in-a-fashion-photoshoot-42751-large.mp4",
     videoCaption: "Chloe directing the backstage chaos at our charity fashion show.",
-    highlights: ["Thrift Prom", "Charity Gala", "Milan Dream"]
+    highlights: ["Thrift Prom", "Charity Gala", "Milan Dream"],
+    username: "Ashlesha"
   },
   {
     id: "samruddhi warsagde",
@@ -261,7 +270,8 @@ export const friendsData: Friend[] = [
     handwrittenQuote: "Never stop climbing. The view is always worth it!",
     videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-friends-hiking-in-the-mountains-42614-large.mp4",
     videoCaption: "Ethan leading the pack up the Yosemite summit ridge, 2024.",
-    highlights: ["Yosemite Trek", "Van Expedition", "Mountain Summits"]
+    highlights: ["Yosemite Trek", "Van Expedition", "Mountain Summits"],
+    username: "Samruddhi"
   },
   {
     id: "pratyusha komati",
@@ -281,7 +291,8 @@ export const friendsData: Friend[] = [
     handwrittenQuote: "Life is short, eat the dessert first. Love you always!",
     videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-woman-decorating-a-cake-in-a-kitchen-40915-large.mp4",
     videoCaption: "Rachel putting the finishing touches on our graduation celebratory cake.",
-    highlights: ["Midnight Bakery", "Cupcake Victory", "Austin Bakery"]
+    highlights: ["Midnight Bakery", "Cupcake Victory", "Austin Bakery"],
+    username: "Pratyusha"
   },
   {
     id: "sahil bonde",
@@ -301,7 +312,8 @@ export const friendsData: Friend[] = [
     handwrittenQuote: "You're one in a million. Don't ever change who you are.",
     videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-man-working-on-his-laptop-in-a-dark-room-42845-large.mp4",
     videoCaption: "David coding the group's custom soundboard late at night.",
-    highlights: ["Theme Song Doorbell", "Custom Chat Server", "Palo Alto Move"]
+    highlights: ["Theme Song Doorbell", "Custom Chat Server", "Palo Alto Move"],
+    username: "Sahil"
   },
   {
     id: "ayushi sonkosare",
@@ -321,7 +333,8 @@ export const friendsData: Friend[] = [
     handwrittenQuote: "Keep writing your beautiful story. I'll always be reading.",
     videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-woman-writing-in-a-notebook-in-a-cafe-41551-large.mp4",
     videoCaption: "Hannah drafting her storytelling slam winning piece at the local cafe.",
-    highlights: ["Campfire Chronicles", "Storytelling Slam", "Seattle Chapter"]
+    highlights: ["Campfire Chronicles", "Storytelling Slam", "Seattle Chapter"],
+    username: "Ayushi"
   },
   {
     id: "lucas",
@@ -341,7 +354,8 @@ export const friendsData: Friend[] = [
     handwrittenQuote: "Thank you for bringing us all together. You are true family.",
     videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-friends-dancing-at-a-rooftop-party-44142-large.mp4",
     videoCaption: "Lucas leading the salsa line at our rooftop graduation celebration.",
-    highlights: ["Courtyard Salsa", "Campaign Victory", "Madrid Diplomacy"]
+    highlights: ["Courtyard Salsa", "Campaign Victory", "Madrid Diplomacy"],
+    username: "Pranali"
   }
 ];
 

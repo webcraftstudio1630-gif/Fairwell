@@ -1,7 +1,7 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import sequelize from './config/database.js';
 import friendsRouter from './routes/friends.js';
 import messagesRouter from './routes/messages.js';
 import authRouter from './routes/auth.js';
@@ -15,10 +15,10 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDB connected successfully'))
-  .catch((err) => console.error('MongoDB connection error:', err));
+// Connect to PostgreSQL and sync models
+sequelize.sync({ alter: true }) // use alter: true to update schema if models change
+  .then(() => console.log('PostgreSQL connected and models synced successfully'))
+  .catch((err) => console.error('PostgreSQL connection error:', err));
 
 // Routes
 app.use('/api/friends', friendsRouter);

@@ -15,7 +15,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isAdmin = user?.role === 'Admin';
-  const friendData = !isAdmin && user ? friendsData.find(f => f.name.toLowerCase() === user.username.toLowerCase()) : null;
+  const friendData = !isAdmin && user ? friendsData.find(f => f.username === user.username) : null;
 
   const navItems = [
     { id: 'home', label: 'Home', showAlways: true },

@@ -1,5 +1,7 @@
 import express from 'express';
+import { Op } from 'sequelize';
 import PersonalNote from '../models/PersonalNote.js';
+import User from '../models/User.js';
 import { auth } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -7,23 +9,33 @@ const router = express.Router();
 // Get all personal notes
 router.get('/', auth, async (req, res) => {
   try {
-    let notes;
-    if (req.user.role === 'Admin') {
-      // Admin sees all notes
-      notes = await PersonalNote.find()
-        .populate('user', 'username uniqueId role')
-        .populate('recipient', 'username uniqueId role')
-        .sort({ createdAt: -1 });
-    } else {
-      // Friends see notes they sent OR received
-      notes = await PersonalNote.find({
-        $or: [{ user: req.user.id }, { recipient: req.user.id }]
-      })
-        .populate('user', 'username uniqueId role')
-        .populate('recipient', 'username uniqueId role')
-        .sort({ createdAt: -1 });
+    let whereClause = {};
+    if (req.user.role !== 'Admin') {
+      whereClause = {
+        [Op.or]: [{ userId: req.user.id }, { recipientId: req.user.id }]
+      };
     }
-    res.json(notes);
+
+    const notes = await PersonalNote.findAll({
+      where: whereClause,
+      include: [
+        { model: User, as: 'Sender', attributes: ['id', 'username', 'uniqueId', 'role'] },
+        { model: User, as: 'Recipient', attributes: ['id', 'username', 'uniqueId', 'role'] },
+        { model: User, as: 'Likes', attributes: ['id'] }
+      ],
+      order: [['createdAt', 'DESC']]
+    });
+
+    // Format the likes so frontend just gets array of ids like before
+    const formattedNotes = notes.map(note => {
+      const noteJson = note.toJSON();
+      noteJson.user = noteJson.Sender;
+      noteJson.recipient = noteJson.Recipient;
+      noteJson.likes = noteJson.Likes ? noteJson.Likes.map(l => l.id) : [];
+      return noteJson;
+    });
+
+    res.json(formattedNotes);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -42,16 +54,26 @@ router.post('/', auth, async (req, res) => {
       return res.status(400).json({ message: 'Recipient is required.' });
     }
 
-    const newNote = new PersonalNote({
-      user: req.user.id,
-      recipient: recipientId,
+    const newNote = await PersonalNote.create({
+      userId: req.user.id,
+      recipientId: recipientId,
       content
     });
 
-    const savedNote = await newNote.save();
-    const populatedNote = await savedNote.populate(['user', 'recipient']);
+    const populatedNote = await PersonalNote.findByPk(newNote.id, {
+      include: [
+        { model: User, as: 'Sender', attributes: ['id', 'username', 'uniqueId', 'role'] },
+        { model: User, as: 'Recipient', attributes: ['id', 'username', 'uniqueId', 'role'] },
+        { model: User, as: 'Likes', attributes: ['id'] }
+      ]
+    });
     
-    res.status(201).json(populatedNote);
+    const noteJson = populatedNote.toJSON();
+    noteJson.user = noteJson.Sender;
+    noteJson.recipient = noteJson.Recipient;
+    noteJson.likes = [];
+
+    res.status(201).json(noteJson);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -60,26 +82,34 @@ router.post('/', auth, async (req, res) => {
 // Toggle like on a personal note
 router.put('/:id/like', auth, async (req, res) => {
   try {
-    const note = await PersonalNote.findById(req.params.id);
+    const note = await PersonalNote.findByPk(req.params.id);
     
     if (!note) {
       return res.status(404).json({ message: 'Note not found' });
     }
 
     // Check if the user has already liked the note
-    const index = note.likes.indexOf(req.user.id);
-    if (index === -1) {
-      // Not liked yet, add user to likes
-      note.likes.push(req.user.id);
+    const hasLiked = await note.hasLike(req.user.id);
+    if (!hasLiked) {
+      await note.addLike(req.user.id);
     } else {
-      // Already liked, remove user from likes
-      note.likes.splice(index, 1);
+      await note.removeLike(req.user.id);
     }
 
-    const savedNote = await note.save();
-    const populatedNote = await savedNote.populate(['user', 'recipient']);
+    const populatedNote = await PersonalNote.findByPk(note.id, {
+      include: [
+        { model: User, as: 'Sender', attributes: ['id', 'username', 'uniqueId', 'role'] },
+        { model: User, as: 'Recipient', attributes: ['id', 'username', 'uniqueId', 'role'] },
+        { model: User, as: 'Likes', attributes: ['id'] }
+      ]
+    });
     
-    res.json(populatedNote);
+    const noteJson = populatedNote.toJSON();
+    noteJson.user = noteJson.Sender;
+    noteJson.recipient = noteJson.Recipient;
+    noteJson.likes = noteJson.Likes ? noteJson.Likes.map(l => l.id) : [];
+    
+    res.json(noteJson);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -1,10 +1,24 @@
-import mongoose from 'mongoose';
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/database.js';
+import User from './User.js';
 
-const PersonalNoteSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  recipient: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  content: { type: String, required: true },
-  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-}, { timestamps: true });
+const PersonalNote = sequelize.define('PersonalNote', {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true,
+  },
+  content: { 
+    type: DataTypes.TEXT, 
+    allowNull: false 
+  }
+}, {
+  timestamps: true,
+});
 
-export default mongoose.model('PersonalNote', PersonalNoteSchema);
+// Relationships
+PersonalNote.belongsTo(User, { as: 'Sender', foreignKey: 'userId' });
+PersonalNote.belongsTo(User, { as: 'Recipient', foreignKey: 'recipientId' });
+PersonalNote.belongsToMany(User, { through: 'NoteLikes', as: 'Likes' });
+
+export default PersonalNote;
